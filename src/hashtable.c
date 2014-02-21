@@ -1,7 +1,7 @@
 /**
  * A very basic hashtable implementation
  *
- * @author 	Daniel Hong
+ * @author  Daniel Hong
  * 
  * This program is licensed under the GNU GENERAL PUBLIC LICENSE Version 2.
  * A LICENSE file should have accompanied this program.
@@ -97,16 +97,16 @@ void _update(Hashtable *ht, char *key, char *value)
 
 const char *_get(Hashtable *ht, const char *key, const char *def)
 {
-	HTEntry *item;
-	int hash = ht->__hash__(key);
-	
-	item = ht->__table__[hash];
-	
-	if (item == NULL || item->key == NULL || strcmp(key, item->key) != 0) {
-	    return def;
-	}
-	
-	return item->value;
+    HTEntry *item;
+    int hash = ht->__hash__(key);
+    
+    item = ht->__table__[hash];
+    
+    if (item == NULL || item->key == NULL || strcmp(key, item->key) != 0) {
+        return def;
+    }
+    
+    return item->value;
 }
 
 void _remove(Hashtable *ht, const char *key)
@@ -132,18 +132,18 @@ HTEntry *_newitem(char *key, char *value)
         return NULL;
     }
 
-	if ((item->key = memcpy(malloc(strlen(key)), key, strlen(key))) == NULL) {
-	    return NULL;
-	}
+    if ((item->key = memcpy(malloc(strlen(key)), key, strlen(key))) == NULL) {
+        return NULL;
+    }
 
-	if ((item->value = memcpy(malloc(strlen(value)), value, strlen(value))) == NULL) {
-	    return NULL;
-	}
+    if ((item->value = memcpy(malloc(strlen(value)), value, strlen(value))) == NULL) {
+        return NULL;
+    }
 
     // Setting the next item pointer to NULL since there isn't one yet
-	item->next = NULL;
+    item->next = NULL;
 
-	return item;
+    return item;
 }
 
 /**
@@ -170,48 +170,48 @@ int _hash(const char *key)
 void _add_update(Hashtable *ht, char *key, char *value)
 {
     HTEntry *newitem = NULL;
-	HTEntry *curr = NULL;
-	HTEntry *prev = NULL;
+    HTEntry *curr = NULL;
+    HTEntry *prev = NULL;
     int hash = ht->__hash__(key);
 
-	curr = ht->__table__[hash];
+    curr = ht->__table__[hash];
 
     // Follow the links to find the previous and next items
     // This loop will not execute when adding a new hash
-	while(curr != NULL && curr->key != NULL && strcmp(key, curr->key) > 0) {
-		prev = curr;
-		curr = curr->next;
-	}
+    while(curr != NULL && curr->key != NULL && strcmp(key, curr->key) > 0) {
+        prev = curr;
+        curr = curr->next;
+    }
 
-	// If item already exists, we'll update it
-	if (curr != NULL && curr->key != NULL && strcmp(key, curr->key) == 0) {
-		free(curr->value);
-		curr->value = memcpy(malloc(strlen(value)), value, strlen(value));
+    // If item already exists, we'll update it
+    if (curr != NULL && curr->key != NULL && strcmp(key, curr->key) == 0) {
+        free(curr->value);
+        curr->value = memcpy(malloc(strlen(value)), value, strlen(value));
         return;
-	}
-	
-	//
-	// Otherwise we'll add a new item to the table
-	//
-	
-	if ((newitem = ht->__newitem__(key, value)) == NULL) {
-	    printf("Error creating a new hash entry.");
-	    return;
-	}
+    }
+    
+    //
+    // Otherwise we'll add a new item to the table
+    //
+    
+    if ((newitem = ht->__newitem__(key, value)) == NULL) {
+        printf("Error creating a new hash entry.");
+        return;
+    }
 
-	// If at the start of the linked list
-	if (curr == ht->__table__[hash]) {
-		newitem->next = curr;
-		ht->__table__[hash] = newitem;
-	}
-	// If at the end of the linked list
-	else if (curr == NULL) {
-		prev->next = newitem;
-	}
-	// If in the middle of the list
-	else {
-		newitem->next = curr;
-		prev->next = newitem;
-	}
+    // If at the start of the linked list
+    if (curr == ht->__table__[hash]) {
+        newitem->next = curr;
+        ht->__table__[hash] = newitem;
+    }
+    // If at the end of the linked list
+    else if (curr == NULL) {
+        prev->next = newitem;
+    }
+    // If in the middle of the list
+    else {
+        newitem->next = curr;
+        prev->next = newitem;
+    }
 }
 

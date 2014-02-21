@@ -1,7 +1,7 @@
 /**
  * A very basic hashtable implementation
  *
- * @author 	Daniel Hong
+ * @author  Daniel Hong
  * 
  * This program is licensed under the GNU GENERAL PUBLIC LICENSE Version 2.
  * A LICENSE file should have accompanied this program.
@@ -15,8 +15,8 @@
 
 struct HTEntry_s {
     char *key;
-	char *value;
-	struct HTEntry_s *next;
+    char *value;
+    struct HTEntry_s *next;
 };
 
 typedef struct HTEntry_s HTEntry;
@@ -74,8 +74,8 @@ CLASS(Hashtable,
     // -------------------------------------------------------------------------
     
     int __size__;
-	struct HTEntry_s **__table__;
-	FUNC(HTEntry *, __newitem__, (char *, char *));
+    struct HTEntry_s **__table__;
+    FUNC(HTEntry *, __newitem__, (char *, char *));
     FUNC(void, __add_update__, (struct Hashtable *, char *, char *));
     FUNC(int, __hash__, (const char *));
 );
