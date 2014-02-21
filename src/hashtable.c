@@ -111,7 +111,7 @@ const char *_get(Hashtable *ht, const char *key, const char *def)
 
 void _remove(Hashtable *ht, const char *key)
 {
-    
+    // TODO needs to be implemented
 }
 
 int _contains_key(Hashtable *ht, const char *key)

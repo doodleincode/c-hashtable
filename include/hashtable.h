@@ -10,7 +10,6 @@
 #ifndef _DH_HASHTABLE_H_
 #define _DH_HASHTABLE_H_
 
-#include <limits.h>
 #include "../../c-functions/include/class.h"
 
 struct HTEntry_s {
