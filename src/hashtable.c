@@ -79,28 +79,28 @@ void free_hashtable(Hashtable *ht)
 //  Function pointer implementations. These should not be called directly!
 // -----------------------------------------------------------------------------
 
-void _add(Hashtable *ht, char *key, char *value)
+void _add(Hashtable *this, char *key, char *value)
 {
-    ht->__add_update__(ht, key, value);
+    this->__add_update__(this, key, value);
 }
 
-void _update(Hashtable *ht, char *key, char *value)
+void _update(Hashtable *this, char *key, char *value)
 {
     // If the key doesn't exist, show error and return
-    if (ht->contains_key(ht, key) == 0) {
+    if (this->contains_key(this, key) == 0) {
         printf("Attempting to update the key '%s' which does not exist.", key);
         return;
     }
     
-    ht->__add_update__(ht, key, value);
+    this->__add_update__(this, key, value);
 }
 
-const char *_get(Hashtable *ht, const char *key, const char *def)
+const char *_get(Hashtable *this, const char *key, const char *def)
 {
     HTEntry *item;
-    int hash = ht->__hash__(key);
+    int hash = this->__hash__(key);
     
-    item = ht->__table__[hash];
+    item = this->__table__[hash];
     
     if (item == NULL || item->key == NULL || strcmp(key, item->key) != 0) {
         return def;
@@ -109,15 +109,15 @@ const char *_get(Hashtable *ht, const char *key, const char *def)
     return item->value;
 }
 
-void _remove(Hashtable *ht, const char *key)
+void _remove(Hashtable *this, const char *key)
 {
     // TODO needs to be implemented
 }
 
-int _contains_key(Hashtable *ht, const char *key)
+int _contains_key(Hashtable *this, const char *key)
 {
-    int hash = ht->__hash__(key);
-    return ((ht->__table__[hash] == NULL) ? 0 : 1);
+    int hash = this->__hash__(key);
+    return ((this->__table__[hash] == NULL) ? 0 : 1);
 }
 
 // -----------------------------------------------------------------------------
@@ -167,14 +167,14 @@ int _hash(const char *key)
     return hash;
 }
 
-void _add_update(Hashtable *ht, char *key, char *value)
+void _add_update(Hashtable *this, char *key, char *value)
 {
     HTEntry *newitem = NULL;
     HTEntry *curr = NULL;
     HTEntry *prev = NULL;
-    int hash = ht->__hash__(key);
+    int hash = this->__hash__(key);
 
-    curr = ht->__table__[hash];
+    curr = this->__table__[hash];
 
     // Follow the links to find the previous and next items
     // This loop will not execute when adding a new hash
@@ -194,15 +194,15 @@ void _add_update(Hashtable *ht, char *key, char *value)
     // Otherwise we'll add a new item to the table
     //
     
-    if ((newitem = ht->__newitem__(key, value)) == NULL) {
+    if ((newitem = this->__newitem__(key, value)) == NULL) {
         printf("Error creating a new hash entry.");
         return;
     }
 
     // If at the start of the linked list
-    if (curr == ht->__table__[hash]) {
+    if (curr == this->__table__[hash]) {
         newitem->next = curr;
-        ht->__table__[hash] = newitem;
+        this->__table__[hash] = newitem;
     }
     // If at the end of the linked list
     else if (curr == NULL) {
