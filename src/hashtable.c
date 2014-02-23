@@ -79,12 +79,12 @@ void free_hashtable(Hashtable *ht)
 //  Function pointer implementations. These should not be called directly!
 // -----------------------------------------------------------------------------
 
-void _add(Hashtable *this, char *key, char *value)
+static void _add(Hashtable *this, char *key, char *value)
 {
     this->__add_update__(this, key, value);
 }
 
-void _update(Hashtable *this, char *key, char *value)
+static void _update(Hashtable *this, char *key, char *value)
 {
     // If the key doesn't exist, show error and return
     if (this->contains_key(this, key) == 0) {
@@ -95,7 +95,7 @@ void _update(Hashtable *this, char *key, char *value)
     this->__add_update__(this, key, value);
 }
 
-const char *_get(Hashtable *this, const char *key, const char *def)
+static const char *_get(Hashtable *this, const char *key, const char *def)
 {
     HTEntry *item;
     int hash = this->__hash__(key);
@@ -109,12 +109,12 @@ const char *_get(Hashtable *this, const char *key, const char *def)
     return item->value;
 }
 
-void _remove(Hashtable *this, const char *key)
+static void _remove(Hashtable *this, const char *key)
 {
     // TODO needs to be implemented
 }
 
-int _contains_key(Hashtable *this, const char *key)
+static int _contains_key(Hashtable *this, const char *key)
 {
     int hash = this->__hash__(key);
     return ((this->__table__[hash] == NULL) ? 0 : 1);
@@ -124,7 +124,7 @@ int _contains_key(Hashtable *this, const char *key)
 //  Private methods
 // -----------------------------------------------------------------------------
 
-HTEntry *_newitem(char *key, char *value)
+static HTEntry *_newitem(char *key, char *value)
 {
     HTEntry *item;
     
@@ -151,7 +151,7 @@ HTEntry *_newitem(char *key, char *value)
  * Uses the Jenkins hash algorithm
  * http://en.wikipedia.org/wiki/Jenkins_hash_function
  */
-int _hash(const char *key)
+static int _hash(const char *key)
 {
     unsigned short hash, i;
     
@@ -167,7 +167,7 @@ int _hash(const char *key)
     return hash;
 }
 
-void _add_update(Hashtable *this, char *key, char *value)
+static void _add_update(Hashtable *this, char *key, char *value)
 {
     HTEntry *newitem = NULL;
     HTEntry *curr = NULL;

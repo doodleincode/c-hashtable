@@ -97,17 +97,17 @@ Hashtable *init_hashtable();
 void free_hashtable(Hashtable *);
 
 // -----------------------------------------------------------------------------
-//  Function pointers. These should not be called directly
+//  Function pointers.
 // -----------------------------------------------------------------------------
 
-void _add(Hashtable *, char *, char *);
-void _update(Hashtable *, char *, char *);
-const char *_get(Hashtable *, const char *, const char *);
-void _remove(Hashtable *, const char *);
-int _contains_key(Hashtable *, const char *);
-HTEntry *_newitem(char *, char *);
-int _hash(const char *);
-void _add_update(Hashtable *, char *, char *);
+static void _add(Hashtable *, char *, char *);
+static void _update(Hashtable *, char *, char *);
+static const char *_get(Hashtable *, const char *, const char *);
+static void _remove(Hashtable *, const char *);
+static int _contains_key(Hashtable *, const char *);
+static HTEntry *_newitem(char *, char *);
+static int _hash(const char *);
+static void _add_update(Hashtable *, char *, char *);
 
 #endif /* _DH_HASHTABLE_H_ */
 
