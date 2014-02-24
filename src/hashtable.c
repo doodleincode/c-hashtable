@@ -31,26 +31,26 @@ Hashtable *init_hashtable()
     // We are just allocating USHRT_MAX number of pointers
     // Memoery for the actual key/value entry will be allocated when an 
     // item is added to the hashtable
-    if ((ht->__table__ = malloc(sizeof(HTEntry *) * USHRT_MAX)) == NULL) {
+    if ((ht->_table = malloc(sizeof(HTEntry *) * USHRT_MAX)) == NULL) {
         return NULL;
     }
     
     for (i = 0; i < USHRT_MAX; i++) {
-        ht->__table__[i] = NULL;
+        ht->_table[i] = NULL;
     }
     
     // Setup the property/function pointers
-    ht->add = _add;
-    ht->update = _update;
-    ht->get = _get;
-    ht->remove = _remove;
-    ht->contains_key = _contains_key;
+    ht->add = _add_;
+    ht->update = _update_;
+    ht->get = _get_;
+    ht->remove = _remove_;
+    ht->contains_key = _contains_key_;
     
     // These are "private" members
-    ht->__add_update__ = _add_update;
-    ht->__newitem__ = _newitem;
-    ht->__hash__ = _hash;
-    ht->__size__ = USHRT_MAX;
+    ht->_add_update = _add_update_;
+    ht->_newitem = _newitem_;
+    ht->_hash = _hash_;
+    ht->_size = USHRT_MAX;
     
     return ht;
 }
@@ -60,16 +60,16 @@ void free_hashtable(Hashtable *ht)
     int i;
     
     if (ht) {
-        for (i = 0; i < ht->__size__; i++) {
-            if (ht->__table__[i] != NULL) {
-                free(ht->__table__[i]->key);
-                free(ht->__table__[i]->value);
-                free(ht->__table__[i]);
-                ht->__table__[i] = NULL;
+        for (i = 0; i < ht->_size; i++) {
+            if (ht->_table[i] != NULL) {
+                free(ht->_table[i]->key);
+                free(ht->_table[i]->value);
+                free(ht->_table[i]);
+                ht->_table[i] = NULL;
             }
         }
         
-        free(ht->__table__);
+        free(ht->_table);
         free(ht);
         ht = NULL;
     }
@@ -79,12 +79,12 @@ void free_hashtable(Hashtable *ht)
 //  Function pointer implementations. These should not be called directly!
 // -----------------------------------------------------------------------------
 
-static void _add(Hashtable *this, char *key, char *value)
+static void _add_(Hashtable *this, char *key, char *value)
 {
-    this->__add_update__(this, key, value);
+    this->_add_update(this, key, value);
 }
 
-static void _update(Hashtable *this, char *key, char *value)
+static void _update_(Hashtable *this, char *key, char *value)
 {
     // If the key doesn't exist, show error and return
     if (this->contains_key(this, key) == 0) {
@@ -92,15 +92,15 @@ static void _update(Hashtable *this, char *key, char *value)
         return;
     }
     
-    this->__add_update__(this, key, value);
+    this->_add_update(this, key, value);
 }
 
-static const char *_get(Hashtable *this, const char *key, const char *def)
+static const char *_get_(Hashtable *this, const char *key, const char *def)
 {
     HTEntry *item;
-    int hash = this->__hash__(key);
+    int hash = this->_hash(key);
     
-    item = this->__table__[hash];
+    item = this->_table[hash];
     
     if (item == NULL || item->key == NULL || strcmp(key, item->key) != 0) {
         return def;
@@ -109,22 +109,22 @@ static const char *_get(Hashtable *this, const char *key, const char *def)
     return item->value;
 }
 
-static void _remove(Hashtable *this, const char *key)
+static void _remove_(Hashtable *this, const char *key)
 {
     // TODO needs to be implemented
 }
 
-static int _contains_key(Hashtable *this, const char *key)
+static int _contains_key_(Hashtable *this, const char *key)
 {
-    int hash = this->__hash__(key);
-    return ((this->__table__[hash] == NULL) ? 0 : 1);
+    int hash = this->_hash(key);
+    return ((this->_table[hash] == NULL) ? 0 : 1);
 }
 
 // -----------------------------------------------------------------------------
 //  Private methods
 // -----------------------------------------------------------------------------
 
-static HTEntry *_newitem(char *key, char *value)
+static HTEntry *_newitem_(char *key, char *value)
 {
     HTEntry *item;
     
@@ -151,7 +151,7 @@ static HTEntry *_newitem(char *key, char *value)
  * Uses the Jenkins hash algorithm
  * http://en.wikipedia.org/wiki/Jenkins_hash_function
  */
-static int _hash(const char *key)
+static int _hash_(const char *key)
 {
     unsigned short hash, i;
     
@@ -167,14 +167,14 @@ static int _hash(const char *key)
     return hash;
 }
 
-static void _add_update(Hashtable *this, char *key, char *value)
+static void _add_update_(Hashtable *this, char *key, char *value)
 {
     HTEntry *newitem = NULL;
     HTEntry *curr = NULL;
     HTEntry *prev = NULL;
-    int hash = this->__hash__(key);
+    int hash = this->_hash(key);
 
-    curr = this->__table__[hash];
+    curr = this->_table[hash];
 
     // Follow the links to find the previous and next items
     // This loop will not execute when adding a new hash
@@ -194,15 +194,15 @@ static void _add_update(Hashtable *this, char *key, char *value)
     // Otherwise we'll add a new item to the table
     //
     
-    if ((newitem = this->__newitem__(key, value)) == NULL) {
+    if ((newitem = this->_newitem(key, value)) == NULL) {
         printf("Error creating a new hash entry.");
         return;
     }
 
     // If at the start of the linked list
-    if (curr == this->__table__[hash]) {
+    if (curr == this->_table[hash]) {
         newitem->next = curr;
-        this->__table__[hash] = newitem;
+        this->_table[hash] = newitem;
     }
     // If at the end of the linked list
     else if (curr == NULL) {

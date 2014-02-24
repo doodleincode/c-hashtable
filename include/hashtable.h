@@ -72,11 +72,11 @@ CLASS(Hashtable,
     //  and as such are not documented
     // -------------------------------------------------------------------------
     
-    int __size__;
-    struct HTEntry_s **__table__;
-    FUNC(HTEntry *, __newitem__, (char *, char *));
-    FUNC(void, __add_update__, (struct Hashtable *, char *, char *));
-    FUNC(int, __hash__, (const char *));
+    int _size;
+    struct HTEntry_s **_table;
+    FUNC(HTEntry *, _newitem, (char *, char *));
+    FUNC(void, _add_update, (struct Hashtable *, char *, char *));
+    FUNC(int, _hash, (const char *));
 );
 
 /**
@@ -100,14 +100,14 @@ void free_hashtable(Hashtable *);
 //  Function pointers.
 // -----------------------------------------------------------------------------
 
-static void _add(Hashtable *, char *, char *);
-static void _update(Hashtable *, char *, char *);
-static const char *_get(Hashtable *, const char *, const char *);
-static void _remove(Hashtable *, const char *);
-static int _contains_key(Hashtable *, const char *);
-static HTEntry *_newitem(char *, char *);
-static int _hash(const char *);
-static void _add_update(Hashtable *, char *, char *);
+static void _add_(Hashtable *, char *, char *);
+static void _update_(Hashtable *, char *, char *);
+static const char *_get_(Hashtable *, const char *, const char *);
+static void _remove_(Hashtable *, const char *);
+static int _contains_key_(Hashtable *, const char *);
+static HTEntry *_newitem_(char *, char *);
+static int _hash_(const char *);
+static void _add_update_(Hashtable *, char *, char *);
 
 #endif /* _DH_HASHTABLE_H_ */
 
